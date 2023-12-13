@@ -1,0 +1,15 @@
+#!/bin/sh
+
+disable_radio_devices()
+{
+    if [ -e "/etc/config/wireless" ]; then
+        for i in $(uci -q show wireless | grep wifi-device | cut -d '=' -f1 | cut -d '.' -f2); do
+            uci -q set wireless.$i.disabled="1"
+            uci commit wireless
+        done
+    fi
+}
+
+disable_radio_devices
+
+exit 0
