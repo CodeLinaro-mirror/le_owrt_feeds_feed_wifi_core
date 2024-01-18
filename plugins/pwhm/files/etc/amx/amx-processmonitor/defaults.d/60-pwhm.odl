@@ -1,0 +1,14 @@
+%populate {
+    object ProcessMonitor.Test {
+        instance add ("pwhm") {
+            parameter Name = "prplmesh_whm";
+            parameter Type = "Plugin";
+            parameter Subject = "WiFi";
+            parameter MaxFailNum = 2;
+            parameter MaxFailDuration = -1;
+            parameter FailAction = "RESTART";
+            parameter TestInterval = 5;
+            parameter TestResetInterval = 3600;
+        }
+    }
+}
