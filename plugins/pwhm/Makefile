@@ -1,13 +1,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pwhm
-PKG_VERSION:=v5.29.1
+PKG_VERSION:=v5.33.1
 SHORT_DESCRIPTION:=PrplMesh WHM
 
-PKG_SOURCE:=pwhm-v5.29.1.tar.gz
-PKG_SOURCE_URL:=https://gitlab.com/prpl-foundation/prplmesh/pwhm/plugins/pwhm/-/archive/v5.29.1
-PKG_HASH:=afc7e959c39b523b1569fcdd8ef89d4e67eaebd5e7705038bf28a6e0d511ca5f
-PKG_BUILD_DIR:=$(BUILD_DIR)/pwhm-v5.29.1
+PKG_SOURCE:=pwhm-v5.33.1.tar.gz
+PKG_SOURCE_URL:=https://gitlab.com/prpl-foundation/prplmesh/pwhm/plugins/pwhm/-/archive/v5.33.1
+PKG_HASH:=f4d60c36505a44a8a9b2832c44cedc14ede88c07f1bc92aeb9a73c4b27923f45
+PKG_BUILD_DIR:=$(BUILD_DIR)/pwhm-v5.33.1
 PKG_MAINTAINER:=Soft At Home <support.opensource@softathome.com>
 PKG_LICENSE:=BSD-2-Clause-Patent
 PKG_LICENSE_FILES:=LICENSE
@@ -45,6 +45,7 @@ define Package/$(PKG_NAME)
   DEPENDS += +amxrt
   DEPENDS += +libamxj
   DEPENDS += +mod-netmodel
+  DEPENDS += +odl-generator
   MENU:=1
 endef
 
