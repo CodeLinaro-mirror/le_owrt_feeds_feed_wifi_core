@@ -6,7 +6,7 @@ SHORT_DESCRIPTION:=PrplMesh WHM
 
 PKG_SOURCE:=pwhm-v6.23.0.tar.gz
 PKG_SOURCE_URL:=https://gitlab.com/prpl-foundation/prplmesh/pwhm/plugins/pwhm/-/archive/v6.23.0
-PKG_HASH:=skip
+PKG_HASH:=0ceb4be92538520b9a73657d9ae0c602978ef7bcffa1f20c5a9d8e3e5b0e6c7c
 PKG_BUILD_DIR:=$(BUILD_DIR)/pwhm-v6.23.0
 PKG_MAINTAINER:=Soft At Home <support.opensource@softathome.com>
 PKG_LICENSE:=BSD-2-Clause-Patent
