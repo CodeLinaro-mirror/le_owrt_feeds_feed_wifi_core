@@ -59,6 +59,10 @@ config SAH_WLD_ENABLE_USP_SERVER_SOCKET
     bool "Enable direct USP server socket"
     default n
 
+config SAH_WLD_ENABLE_PCB_SERVER_SOCKET
+    bool "Enable direct PCB server socket"
+    default n
+
 endmenu
 
 endif
