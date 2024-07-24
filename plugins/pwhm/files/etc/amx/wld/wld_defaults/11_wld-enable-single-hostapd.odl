@@ -1,0 +1,14 @@
+%populate {
+    object 'WiFi' {
+        object 'DaemonMgt' {
+            object 'Daemon' {
+                object 'hostapd' {
+                    object ExecutionSettings {
+                        parameter UseGlobalInstance = "Auto";
+                    }
+                }
+            }
+        }
+    }
+}
+
