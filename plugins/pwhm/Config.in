@@ -9,6 +9,7 @@ menu "Select pwhm build options"
 
 config SAH_SERVICES_PWHM
     bool "Build pwhm itself"
+    select WPA_MBO_SUPPORT
     default y
 
 config SAH_SERVICES_PWHM_DISABLE_PERSIST
