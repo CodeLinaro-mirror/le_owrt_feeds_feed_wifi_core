@@ -1,0 +1,63 @@
+From bb9060f7e2d66ce989eb856c6b9bf2eec556bc93 Mon Sep 17 00:00:00 2001
+From: sahbot <support.opensource@softathome.com>
+Date: Tue, 5 Nov 2024 10:46:57 +0100
+Subject: [PATCH] Issue: PPW-113 - [Freedom] addVAPIntf failed with status 13 -
+ duplicate
+
+Problem:
+In some cases we cannont add a vap using WiFi.addVAPIntf, it
+fails with error 13 (duplicate)
+
+Cause:
+- In the function _addVAPIntf we use the API amxc_llist_get_last to get
+the last element of SSID instances list
+- By using the API we assume that the last element has the most
+significant index. However, when the list is not sorted, this assumption
+may be incorrect
+- The index of the interfaces (ie SSID) are affected incrementally
+following their declaration order in the networklayou.json. In the other
+hand, the SSID contains a first block of VAP then EPs. Thus, if a radio
+is declared after an endpoint in networklayout.json (which can happen
+after the latest odl-generator version), the object returned by
+amxc_llist_get_last will have an index lower than the most recently
+created one !
+
+Correction:
+Use the dedicated function swla_object_getFirstAvailableIndex to get the
+first available index in a template
+
+Fixes: PPW-113
+
+Signed-off-by: Houssem Dafdouf <houssem.dafdouf_ext@softathome.com>
+GitOrigin-RevId: 56ebdc6f250ffcab9aa7fe7de55152dab7062f5b
+---
+ src/RadMgt/wld_rad_ifMgt.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/src/RadMgt/wld_rad_ifMgt.c b/src/RadMgt/wld_rad_ifMgt.c
+index 4dee4ec6..2e107211 100644
+--- a/src/RadMgt/wld_rad_ifMgt.c
++++ b/src/RadMgt/wld_rad_ifMgt.c
+@@ -117,8 +117,7 @@ amxd_status_t _addVAPIntf(amxd_object_t* obj _UNUSED,
+     amxd_trans_t trans;
+     amxd_trans_init(&trans);
+     if(ssidObj == NULL) {
+-        amxd_object_t* lastSsidInst = amxc_container_of(amxc_llist_get_last(&ssidObjTmpl->instances), amxd_object_t, it);
+-        uint32_t newSsidIdx = amxd_object_get_index(lastSsidInst) + 1;
++        uint32_t newSsidIdx = swla_object_getFirstAvailableIndex(ssidObjTmpl);
+         amxd_trans_select_object(&trans, ssidObjTmpl);
+         amxd_trans_add_inst(&trans, newSsidIdx, apname);
+         char* ssidTmplPath = amxd_object_get_path(ssidObjTmpl, AMXD_OBJECT_INDEXED);
+@@ -228,8 +227,7 @@ amxd_status_t _addEndPointIntf(amxd_object_t* wifi,
+     amxd_trans_t trans;
+     amxd_trans_init(&trans);
+     if(ssidObj == NULL) {
+-        amxd_object_t* lastSsidInst = amxc_container_of(amxc_llist_get_last(&ssidObjTmpl->instances), amxd_object_t, it);
+-        uint32_t newSsidIdx = amxd_object_get_index(lastSsidInst) + 1;
++        uint32_t newSsidIdx = swla_object_getFirstAvailableIndex(ssidObjTmpl);
+         amxd_trans_select_object(&trans, ssidObjTmpl);
+         amxd_trans_add_inst(&trans, newSsidIdx, endpointname);
+         char* ssidTmplPath = amxd_object_get_path(ssidObjTmpl, AMXD_OBJECT_INDEXED);
+-- 
+GitLab
+
