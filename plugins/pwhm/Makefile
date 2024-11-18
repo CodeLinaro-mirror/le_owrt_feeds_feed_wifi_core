@@ -1,13 +1,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pwhm
-PKG_VERSION:=v6.44.6
+PKG_VERSION:=v6.44.7
 SHORT_DESCRIPTION:=PrplMesh WHM
 
-PKG_SOURCE:=pwhm-v6.44.6.tar.gz
-PKG_SOURCE_URL:=https://gitlab.com/prpl-foundation/prplmesh/pwhm/plugins/pwhm/-/archive/v6.44.6
-PKG_HASH:=b28c958d555f64523a05225e54a7bc471808d9020f1a9e2fb4f3a517549db8b1
-PKG_BUILD_DIR:=$(BUILD_DIR)/pwhm-v6.44.6
+PKG_SOURCE:=pwhm-v6.44.7.tar.gz
+PKG_SOURCE_URL:=https://gitlab.com/prpl-foundation/prplmesh/pwhm/plugins/pwhm/-/archive/v6.44.7
+PKG_HASH:=8b9fd53bec15bfbfbc1dd5c503c6f0f69662fea2120b35e155c7b427c1af6f50
+PKG_BUILD_DIR:=$(BUILD_DIR)/pwhm-v6.44.7
 PKG_MAINTAINER:=Soft At Home <support.opensource@softathome.com>
 PKG_LICENSE:=BSD-2-Clause-Patent
 PKG_LICENSE_FILES:=LICENSE
