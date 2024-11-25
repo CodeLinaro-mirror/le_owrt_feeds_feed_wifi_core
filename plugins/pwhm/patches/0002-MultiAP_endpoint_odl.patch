@@ -1,0 +1,57 @@
+commit 43535b1f79efb888f3ab58837c3a41c710fcbb91
+Author: rramasamy <rramasamy@maxlinear.com>
+Date:   Thu Sep 12 19:01:47 2024 +0800
+
+    Adding Multi-AP profile and Multi-AP vlan to Endpoint Datamodel
+    
+    For now just adding the Multi-AP elements in Endpoint Datamodel, low level
+    implementation will be done in separate commit/MR once Multi-AP support is
+    available in Opensource WPA_Supplicant.
+    
+    Closes PPM-2954
+    
+    Signed-off-by: rramasamy <rramasamy@maxlinear.com>
+    GitOrigin-RevId: 583c2ec7fcab06fd7906d13db78022c7b179ce97
+
+diff --git a/include/wld/wld.h b/include/wld/wld.h
+index 1c39a42..ef9d9ce 100644
+--- a/include/wld/wld.h
++++ b/include/wld/wld.h
+@@ -2072,6 +2072,9 @@ struct S_EndPoint {
+     bool multiAPEnable;              /* Set MultiAP BackhaulSTA on this EndPoint */
+     bool toggleBssOnReconnect;       /* Disable hostapd on EP reconnection */
+ 
++    wld_multiap_profile_e multiAPProfile; /* MultiAP profile status */
++    uint16_t multiAPVlanId;               /* Primary VLAN ID config for MultiAP */
++
+     wld_tinyRoam_t* tinyRoam;
+     wld_fcallState_t statsCall;
+ 
+diff --git a/odl/wld_endpoint.odl b/odl/wld_endpoint.odl
+index 8ca8f26..8c61b05 100644
+--- a/odl/wld_endpoint.odl
++++ b/odl/wld_endpoint.odl
+@@ -141,6 +141,23 @@
+ 		 */
+ 		%persistent bool MultiAPEnable;
+ 
++		/**
++		 * Defines Multi-AP profile details as defined in Wi-Fi EasyMesh specification
++		 */
++		%persistent uint8 MultiAPProfile {
++			default 0;
++			on action validate call check_range { min = 0, max = 3 };
++		}
++
++		/**
++		 * Updates Multi-AP Default 802.1Q Setting subelement
++		 * Valid range is from 0 to 4094. 0 indicates VLAN disabled.
++		 */
++		%persistent uint16 MultiAPVlanId {
++			default 0;
++			on action validate call check_range { min = 0, max = 4094 };
++		}
++
+ 		/**
+ 		 * The threshold for the number of reconnects at which we perform a radio toggle
+ 		 * Set to 0 to disable.

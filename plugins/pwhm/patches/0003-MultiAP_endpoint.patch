@@ -1,0 +1,176 @@
+commit 4f782aa3cbee68d79baf31676b2559f60a3e1e0b
+Author: rramasamy <rramasamy@maxlinear.com>
+Date:   Tue Oct 1 11:21:35 2024 +0800
+
+    Patch for wpa_supp and hostapd
+    
+    Signed-off-by: rramasamy <rramasamy@maxlinear.com>
+
+diff --git a/include/wld/wld_wpaCtrl_events.h b/include/wld/wld_wpaCtrl_events.h
+index 711c974..0209307 100644
+--- a/include/wld/wld_wpaCtrl_events.h
++++ b/include/wld/wld_wpaCtrl_events.h
+@@ -151,7 +151,7 @@ typedef void (* wld_wpaCtrl_wdsIfaceAddedCb_f)(void* userData, char* ifName, cha
+ typedef void (* wld_wpaCtrl_wdsIfaceRemovedCb_f)(void* userData, char* ifName, char* wdsName, swl_macBin_t* bStationMac);
+ typedef void (* wld_wpaCtrl_btmReplyCb_f)(void* userData, char* ifName, swl_macChar_t* mac, uint8_t status, swl_macChar_t* targetBssid);
+ typedef void (* wld_wpaCtrl_mgtFrameReceivedCb_f)(void* userData, char* ifName, swl_80211_mgmtFrame_t* frame, size_t frameLen, char* frameStr);
+-typedef void (* wld_wpaCtrl_stationConnectivityCb_f)(void* userData, char* ifName, swl_macBin_t* bBssidMac, swl_IEEE80211deauthReason_ne reason);
++typedef void (* wld_wpaCtrl_stationConnectivityCb_f)(void* userData, char* ifName, swl_macBin_t* bBssidMac, swl_IEEE80211deauthReason_ne reason, uint8_t profile, uint16_t vlan_id);
+ typedef void (* wld_wpaCtrl_stationScanFailedCb_f)(void* userData, char* ifName, int error);
+ typedef void (* wld_wpaCtrl_beaconResponseCb_f)(void* userData, char* ifName, swl_macBin_t* station, wld_wpaCtrl_rrmBeaconRsp_t* rrmBeaconResponse);
+ typedef void (* wld_wpaCtrl_stationStartConnCb_f)(void* userData, char* ifName, const char* ssid, swl_macBin_t* bBssidMac, swl_chanspec_t* pChansSpec);
+diff --git a/scripts/wld.sh b/scripts/wld.sh
+old mode 100755
+new mode 100644
+diff --git a/src/Plugin/wifiGen_eventHandlers.c b/src/Plugin/wifiGen_eventHandlers.c
+index 27ed1cb..4db3744 100644
+--- a/src/Plugin/wifiGen_eventHandlers.c
++++ b/src/Plugin/wifiGen_eventHandlers.c
+@@ -278,7 +278,7 @@ static void s_mngrReadyCb(void* userData, char* ifName, bool isReady) {
+         wld_epConnectionStatus_e connState = pEP->connectionStatus;
+         wifiGen_ep_connStatus(pEP, &connState);
+         if(connState == EPCS_CONNECTED) {
+-            CALL_INTF_EXT(pEP->wpaCtrlInterface, fStationConnectedCb, NULL, 0);
++            CALL_INTF_EXT(pEP->wpaCtrlInterface, fStationConnectedCb, NULL, 0, 0, 0);
+         } else {
+             wld_endpoint_setConnectionStatus(pEP, connState, EPE_NONE);
+         }
+@@ -1047,8 +1047,8 @@ swl_rc_ne wifiGen_setVapEvtHandlers(T_AccessPoint* pAP) {
+     return SWL_RC_OK;
+ }
+ 
+-static void s_stationDisconnectedEvt(void* pRef, char* ifName, swl_macBin_t* bBssidMac, swl_IEEE80211deauthReason_ne reason) {
+-    T_EndPoint* pEP = (T_EndPoint*) pRef;
++static void s_stationDisconnectedEvt(void* pRef, char* ifName, swl_macBin_t* bBssidMac, swl_IEEE80211deauthReason_ne reason, uint8_t profile _UNUSED, uint16_t vlan_id _UNUSED) {
++	 T_EndPoint* pEP = (T_EndPoint*) pRef;
+     ASSERT_NOT_NULL(pEP, , ME, "NULL");
+     ASSERT_NOT_NULL(ifName, , ME, "NULL");
+ 
+@@ -1059,8 +1059,8 @@ static void s_stationDisconnectedEvt(void* pRef, char* ifName, swl_macBin_t* bBs
+     }
+ }
+ 
+-static void s_stationAssociatedEvt(void* pRef, char* ifName, swl_macBin_t* bBssidMac, swl_IEEE80211deauthReason_ne reason _UNUSED) {
+-    T_EndPoint* pEP = (T_EndPoint*) pRef;
++static void s_stationAssociatedEvt(void* pRef, char* ifName, swl_macBin_t* bBssidMac, swl_IEEE80211deauthReason_ne reason _UNUSED, uint8_t profile _UNUSED, uint16_t vlan_id _UNUSED) {
++	 T_EndPoint* pEP = (T_EndPoint*) pRef;
+     ASSERT_NOT_NULL(pEP, , ME, "NULL");
+     ASSERT_NOT_NULL(ifName, , ME, "NULL");
+ 
+@@ -1071,8 +1071,8 @@ static void s_stationAssociatedEvt(void* pRef, char* ifName, swl_macBin_t* bBssi
+     }
+ }
+ 
+-static void s_stationConnectedEvt(void* pRef, char* ifName, swl_macBin_t* bBssidMac, swl_IEEE80211deauthReason_ne reason _UNUSED) {
+-    T_EndPoint* pEP = (T_EndPoint*) pRef;
++static void s_stationConnectedEvt(void* pRef, char* ifName, swl_macBin_t* bBssidMac, swl_IEEE80211deauthReason_ne reason _UNUSED, uint8_t profile, uint16_t vlan_id) {
++	 T_EndPoint* pEP = (T_EndPoint*) pRef;
+     ASSERT_NOT_NULL(pEP, , ME, "NULL");
+     ASSERT_NOT_NULL(ifName, , ME, "NULL");
+     T_Radio* pRad = pEP->pRadio;
+@@ -1090,8 +1090,16 @@ static void s_stationConnectedEvt(void* pRef, char* ifName, swl_macBin_t* bBssid
+         swl_str_copy(pEP->pSSID->SSID, sizeof(pEP->pSSID->SSID), tmpSsid);
+     }
+ 
++    if(profile != pEP->multiAPProfile) {
++        pEP->multiAPProfile = profile;
++    }
++    if(vlan_id != pEP->multiAPVlanId) {
++        pEP->multiAPVlanId = vlan_id;
++    }
++
+     SAH_TRACEZ_INFO(ME, "%s: station connected to ssid(%s) bssid(%s)", pEP->Name, tmpSsid, tmpBssidStr.cMac);
+     wld_endpoint_sync_connection(pEP, true, 0);
++	 syncData_EndPoint2OBJ(pEP);
+ 
+     // update radio datamodel
+     swl_chanspec_t chanSpec = SWL_CHANSPEC_EMPTY;
+diff --git a/src/nl80211/wld_hostapd_ap_api.c b/src/nl80211/wld_hostapd_ap_api.c
+index 2a46651..9d1ac4c 100644
+--- a/src/nl80211/wld_hostapd_ap_api.c
++++ b/src/nl80211/wld_hostapd_ap_api.c
+@@ -340,7 +340,7 @@ SWL_TABLE(sHapdCfgParamsActionMap,
+               {"uapsd_advertisement_enabled", SECDMN_ACTION_OK_NEED_UPDATE_BEACON},
+               {"rnr", SECDMN_ACTION_OK_NEED_UPDATE_BEACON},
+               {"multi_ap_profile", SECDMN_ACTION_OK_NEED_UPDATE_BEACON},
+-              {"multi_ap_vlanid", SECDMN_ACTION_OK_NEED_UPDATE_BEACON},
++              {"multi_ap_primary_vlanid", SECDMN_ACTION_OK_NEED_UPDATE_BEACON},
+               //params set and applied without any action
+               {"max_num_sta", SECDMN_ACTION_OK_DONE},
+               ));
+@@ -691,7 +691,7 @@ wld_secDmn_action_rc_ne wld_ap_hostapd_setNoSecParams(T_AccessPoint* pAP) {
+         "wps_state", "config_methods", "uuid", "ap_pin",
+         "rrm_neighbor_report", "ieee80211w", "mbo",
+         "wmm_enabled", "uapsd_advertisement_enabled", "rnr", "ap_max_inactivity",
+-        "multi_ap_profile", "multi_ap_vlanid",
++        "multi_ap_profile", "multi_ap_primary_vlanid",
+     };
+     s_setChangedMultiParams(pAP, pCurrVapParams, pNewVapParams,
+                             params, SWL_ARRAY_SIZE(params), &action);
+diff --git a/src/nl80211/wld_hostapd_cfgFile.c b/src/nl80211/wld_hostapd_cfgFile.c
+index 770cffd..b12c243 100644
+--- a/src/nl80211/wld_hostapd_cfgFile.c
++++ b/src/nl80211/wld_hostapd_cfgFile.c
+@@ -676,7 +676,7 @@ static void s_setVapMultiApConf(T_AccessPoint* pAP, swl_mapChar_t* vapConfigMap,
+     if(hapdMultiApType && (pAP->multiAPProfile > MULTIAP_NOT_SUPPORTED)) {
+         swl_mapCharFmt_addValInt32(vapConfigMap, "multi_ap_profile", pAP->multiAPProfile);
+         if((pAP->multiAPVlanId >= MIN_VLAN_ID) && (pAP->multiAPVlanId <= MAX_VLAN_ID)) {
+-            swl_mapCharFmt_addValInt32(vapConfigMap, "multi_ap_vlanid", pAP->multiAPVlanId);
++            swl_mapCharFmt_addValInt32(vapConfigMap, "multi_ap_primary_vlanid", pAP->multiAPVlanId);
+         }
+     }
+ 
+diff --git a/src/nl80211/wld_wpaCtrl_events.c b/src/nl80211/wld_wpaCtrl_events.c
+index 39ec238..2ca2e52 100644
+--- a/src/nl80211/wld_wpaCtrl_events.c
++++ b/src/nl80211/wld_wpaCtrl_events.c
+@@ -619,7 +619,7 @@ static void s_stationAssociated(wld_wpaCtrlInterface_t* pInterface, char* event,
+     SAH_TRACEZ_INFO(ME, "%s: Associated with BSSID(%s)",
+                     pInterface->name, swl_typeMacBin_toBuf32Ref(&bssidBin).buf);
+ 
+-    CALL_INTF(pInterface, fStationAssociatedCb, &bssidBin, 0);
++    CALL_INTF(pInterface, fStationAssociatedCb, &bssidBin, 0, 0, 0);
+ }
+ 
+ static void s_stationDisconnected(wld_wpaCtrlInterface_t* pInterface, char* event _UNUSED, char* params) {
+@@ -629,19 +629,23 @@ static void s_stationDisconnected(wld_wpaCtrlInterface_t* pInterface, char* even
+     swl_macBin_t bBssidMac;
+     swl_mac_charToBin(&bBssidMac, (swl_macChar_t*) bssid);
+     uint8_t reasonCode = wld_wpaCtrl_getValueInt(params, "reason");
+-    CALL_INTF(pInterface, fStationDisconnectedCb, &bBssidMac, reasonCode);
++    CALL_INTF(pInterface, fStationDisconnectedCb, &bBssidMac, reasonCode, 0, 0);
+ }
+ 
+ static void s_stationConnected(wld_wpaCtrlInterface_t* pInterface, char* event _UNUSED, char* params) {
+     // Example: <3>CTRL-EVENT-CONNECTED - Connection to 98:42:65:2d:27:b0 completed [id=0 id_str=]
+     swl_macBin_t bBssidMac = SWL_MAC_BIN_NEW();
+     const char* msgPfx = "- Connection to ";
++	 uint8_t multi_ap_profile = 0;
++	 uint16_t multi_ap_primary_vlan_id = 0;
+     if(swl_str_startsWith(params, msgPfx)) {
+         char bssid[SWL_MAC_CHAR_LEN] = {0};
+         swl_str_copy(bssid, SWL_MAC_CHAR_LEN, &params[strlen(msgPfx)]);
+         SWL_MAC_CHAR_TO_BIN(&bBssidMac, bssid);
+     }
+-    CALL_INTF(pInterface, fStationConnectedCb, &bBssidMac, 0);
++	 multi_ap_profile = wld_wpaCtrl_getValueInt(params, "multi_ap_profile");
++	 multi_ap_primary_vlan_id = wld_wpaCtrl_getValueInt(params, "multi_ap_primary_vlanid");
++    CALL_INTF(pInterface, fStationConnectedCb, &bBssidMac, 0, multi_ap_profile, multi_ap_primary_vlan_id);
+ }
+ 
+ static void s_stationScanFailed(wld_wpaCtrlInterface_t* pInterface, char* event _UNUSED, char* params) {
+diff --git a/src/wld_endpoint.c b/src/wld_endpoint.c
+index 95555e9..2339749 100644
+--- a/src/wld_endpoint.c
++++ b/src/wld_endpoint.c
+@@ -1126,8 +1126,8 @@ void syncData_EndPoint2OBJ(T_EndPoint* pEP) {
+         free(currSsidRef);
+     }
+     amxd_trans_set_cstring_t(&trans, "SSIDReference", TBuf);
+-
+-
++    amxd_trans_set_uint8_t(&trans, "MultiAPProfile", pEP->multiAPProfile);
++    amxd_trans_set_uint16_t(&trans, "MultiAPVlanId", pEP->multiAPVlanId);
+ 
+     amxd_object_t* secObj = amxd_object_findf(object, "Security");
+     amxd_trans_select_object(&trans, secObj);
