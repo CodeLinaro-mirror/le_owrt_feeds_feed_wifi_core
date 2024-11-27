@@ -1,0 +1,114 @@
+From 075a94de316f1e27a959857ac175f66961ec6e34 Mon Sep 17 00:00:00 2001
+From: sahbot <support.opensource@softathome.com>
+Date: Tue, 19 Nov 2024 09:31:33 +0100
+Subject: [PATCH] Issue: SSW-9595 fix amx events no more sent over amx
+
+Problem:
+- pwhm no more sending custom events
+
+Cause:
+- since feed_amx 11.14.1, custom amx events MUST be defined on dm odl
+definition file, in order to be sent by amxd
+
+Fix:
+- add pwhm custom event definitions to dm def of Radio, AccessPoint,
+EndPoint objects
+GitOrigin-RevId: 6a34480fcf96e8e391e554eb3710ce54deb0211b
+---
+ odl/wld_accesspoint.odl | 14 ++++++++++++++
+ odl/wld_endpoint.odl    |  6 ++++++
+ odl/wld_radio.odl       |  8 ++++++++
+ 3 files changed, 28 insertions(+)
+
+diff --git a/odl/wld_accesspoint.odl b/odl/wld_accesspoint.odl
+index da1781ed..3b51cba3 100644
+--- a/odl/wld_accesspoint.odl
++++ b/odl/wld_accesspoint.odl
+@@ -103,6 +103,12 @@ define rrm_t{
+ 		on action add-inst call wld_ap_addInstance_oaf;
+ 		on action destroy call wld_ap_delInstance_odf;
+ 		on event "*" call wld_ap_setConf_ocf;
++		event Disassociation;
++		event MgmtDisassocFrame;
++		event MgmtDeauthFrame;
++		event MgmtActionFrameReceived;
++		event wpaCtrlEvents;
++		event 'BSS-TM-RESP';
+ 
+ 		/**
+ 		 * <b>kickStation</b>
+@@ -917,6 +923,10 @@ define rrm_t{
+ 		 *  Setup [WPSv1.0] for this access point.*/
+ 		%persistent object WPS{
+ 			on event "*" call wld_ap_setWpsConf_ocf;
++			event pairingReady;
++			event pairingDone;
++			event pairingError;
++			event pairingNoMessage;
+ 
+ 			/** Enables or disables WPS functionality for this access
+ 			 *  point. Note only one VAP/Radio can enable WPS. For this by
+@@ -2491,6 +2501,10 @@ define rrm_t{
+ 			%persistent object RssiEventing{
+ 
+ 				on event "*" call wld_ap_setRssiEventing_ocf;
++				event RssiUpdate;
++				event RssiUpdateShortHistoryAssoc;
++				event RssiUpdateShortHistoryDisassoc;
++				event RssiUpdateShortHistory;
+ 
+ 				/**
+ 				 * Getting the history statistics for a specific station or for all stations connected to the AP.
+diff --git a/odl/wld_endpoint.odl b/odl/wld_endpoint.odl
+index d10aca16..3ed8229d 100644
+--- a/odl/wld_endpoint.odl
++++ b/odl/wld_endpoint.odl
+@@ -91,6 +91,7 @@
+ 		on action add-inst call wld_ep_addInstance_oaf;
+ 		on action destroy call wld_ep_delInstance_odf;
+ 		on event "*" call wld_ep_setConf_ocf;
++		event wpaCtrlEvents;
+ 
+ 		/** <p>Indicates the status of this end point. Enumeration
+ 		*   of:</p>
+@@ -654,6 +655,11 @@
+ 		 *  Protected Setup [WPSv1.0] for this end point. */
+ 		%persistent object WPS{
+ 			on event "*" call wld_ep_setWpsConf_ocf;
++			event pairingReady;
++			event pairingDone;
++			event pairingError;
++			event pairingNoMessage;
++
+ 			/** Enables or disables WPS functionality for this endpoint. */
+ 			%persistent bool Enable;
+ 
+diff --git a/odl/wld_radio.odl b/odl/wld_radio.odl
+index 7587d164..ba6c61b6 100644
+--- a/odl/wld_radio.odl
++++ b/odl/wld_radio.odl
+@@ -148,6 +148,13 @@ define probelist_t{
+ 	*/
+ 	%persistent object Radio[] {
+ 		on event "*" call wld_radio_setConf_ocf;
++		event ScanComplete;
++		event ScanChange;
++		event wpaCtrlEvents;
++		event ChannelSwitchComplete;
++		event 'Channel change event';
++		event 'DFS Done';
++		
+ 		/**
+ 		 * getSpectrumInfo() returns a list of channels the radio
+ 		 * supports, along with quality parameters
+@@ -2348,6 +2355,7 @@ define probelist_t{
+ 			%persistent object RssiEventing{
+ 
+ 				on event "*" call wld_radStaMon_setRssiEventing_ocf;
++				event RssiUpdate;
+ 
+ 				/**
+ 				 * Enable the rssi eventing
+-- 
+GitLab
+
