@@ -1,13 +1,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pwhm
-PKG_VERSION:=v6.34.0
+PKG_VERSION:=test_v6.34_cdrouter_wpa3
 SHORT_DESCRIPTION:=PrplMesh WHM
 
-PKG_SOURCE:=pwhm-v6.34.0.tar.gz
-PKG_SOURCE_URL:=https://gitlab.com/prpl-foundation/prplmesh/pwhm/plugins/pwhm/-/archive/v6.34.0
-PKG_HASH:=e10b979e8d0631c8f33beca770152d2219616261b0dec6cb357f72f5c8e5a0bf
-PKG_BUILD_DIR:=$(BUILD_DIR)/pwhm-v6.34.0
+PKG_SOURCE:=pwhm-test_v6.34_cdrouter_wpa3.tar.gz
+PKG_SOURCE_URL:=https://gitlab.com/prpl-foundation/prplmesh/pwhm/plugins/pwhm/-/archive/test_v6.34_cdrouter_wpa3
+PKG_HASH:=bea70986661d70c13486aa681551c6141f4a142700c99ecb44c3039a829b54db
+PKG_BUILD_DIR:=$(BUILD_DIR)/pwhm-test_v6.34_cdrouter_wpa3
+
 PKG_MAINTAINER:=Soft At Home <support.opensource@softathome.com>
 PKG_LICENSE:=BSD-2-Clause-Patent
 PKG_LICENSE_FILES:=LICENSE
