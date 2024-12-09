@@ -44,6 +44,7 @@ config SAH_WPS_FRIENDLY_NAME
 config SAH_WLD_INIT_LEGACY
     bool "Legacy: Init wld from vendor plugin"
     default n
+    depends on SAH_LIB_WLD
 
 config SAH_WLD_INIT_SCRIPT
     string "Generic plugin init script name"
@@ -58,10 +59,12 @@ config SAH_WLD_INIT_ORDER
 config SAH_WLD_ENABLE_USP_SERVER_SOCKET
     bool "Enable direct USP server socket"
     default n
+    depends on PACKAGE_mod-amxb-usp
 
 config SAH_WLD_ENABLE_PCB_SERVER_SOCKET
     bool "Enable direct PCB server socket"
     default n
+    depends on (PACKAGE_mod-amxb-pcb || SAH_MOD_AMXB_PCB)
 
 endmenu
 
