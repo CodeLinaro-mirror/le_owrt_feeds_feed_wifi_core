@@ -1,0 +1,37 @@
+From 385336baf5f377293f3d83193e312c4e7b05e6b1 Mon Sep 17 00:00:00 2001
+From: Maarten De Decker <maarten.dedecker@mind.be>
+Date: Wed, 29 Jan 2025 17:47:41 +0100
+Subject: [PATCH] PPM-3145: Add interworking parameter to hostapd config
+ Freedom doesn't advertise interworking/ANPQ support in it's probe responses.
+ While this parameter is already part of the AccessPoint datamodel
+ (.IEEE80211u.InterworkingEnable), the parameter was never added to hostapd's
+ config.
+
+Fix: Add this parameter to hostapd config.
+
+Closes: PPM-3145
+Signed-off-by: Maarten De Decker <maarten.dedecker@mind.be>
+(cherry picked from commit 3f630f09e830bc408ada40581b4ec3572205944a)
+---
+ src/nl80211/wld_hostapd_cfgFile.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/nl80211/wld_hostapd_cfgFile.c b/src/nl80211/wld_hostapd_cfgFile.c
+index ae9ab05..7c18f04 100644
+--- a/src/nl80211/wld_hostapd_cfgFile.c
++++ b/src/nl80211/wld_hostapd_cfgFile.c
+@@ -1007,6 +1007,11 @@ static bool s_setVapCommonConfig(T_AccessPoint* pAP, swl_mapChar_t* vapConfigMap
+         swl_mapCharFmt_addValInt32(vapConfigMap, "transition_disable", pAP->transitionDisable);
+     }
+ 
++
++    // interworking might already be set in some vendor modules. Skip setting it again in that case
++    if(!(swl_map_has(vapConfigMap, "interworking"))) {
++        swl_mapCharFmt_addValInt32(vapConfigMap, "interworking", pAP->cfg11u.interworkingEnable);
++    }
+     bool isIEEE80211k = pAP->IEEE80211kEnable && pRad->IEEE80211kSupported;
+     // Enable neighbor report via radio measurements
+     swl_mapCharFmt_addValInt32(vapConfigMap, "rrm_neighbor_report", isIEEE80211k);
+-- 
+2.44.0
+
