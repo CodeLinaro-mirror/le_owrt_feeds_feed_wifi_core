@@ -1,0 +1,13 @@
+--- a/src/nl80211/wld_hostapd_cfgFile.c
++++ b/src/nl80211/wld_hostapd_cfgFile.c
+@@ -451,6 +451,10 @@ void wld_hostapd_cfgFile_setRadioConfig(
+                 swl_mapChar_add(radConfigMap, "he_spr_srg_partial_bssid", srgPartialBSSIDBitmap);
+             }
+         }
++        if(pRad->operatingFrequencyBand == SWL_FREQ_BAND_EXT_6GHZ) {
++            SAH_TRACEZ_INFO(ME, "%s: Adding 6GHz HE Caps parameters", pRad->Name);
++	    swl_mapCharFmt_addValInt32(radConfigMap, "he_6ghz_reg_pwr_type", 0);   // corresponds to 6GHZ tx power
++        }
+     }
+     if(SWL_BIT_IS_SET(pRad->supportedStandards, SWL_RADSTD_BE)) {
+         swl_mapCharFmt_addValInt32(radConfigMap, "ieee80211be", wld_rad_checkEnabledRadStd(pRad, SWL_RADSTD_BE));

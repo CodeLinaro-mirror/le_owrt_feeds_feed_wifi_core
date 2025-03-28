@@ -1,0 +1,28 @@
+From e9e42e41047270cea30ddedc21c70eea1ce95156 Mon Sep 17 00:00:00 2001
+From: Mohan Raj <quic_mrajraje@quicinc.com>
+Date: Mon, 3 Mar 2025 17:58:45 +0530
+Subject: [PATCH] add_fix_for_vaps_down_for_after_enabling_guest_vap
+
+Signed-off-by: Mohan Raj <quic_mrajraje@quicinc.com>
+---
+ src/nl80211/wld_hostapd_cfgFile.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/nl80211/wld_hostapd_cfgFile.c b/src/nl80211/wld_hostapd_cfgFile.c
+index fb21fba..e040b5d 100644
+--- a/src/nl80211/wld_hostapd_cfgFile.c
++++ b/src/nl80211/wld_hostapd_cfgFile.c
+@@ -734,6 +734,10 @@ static const char* s_selectApLinkIface(T_AccessPoint* pAP) {
+     char* linkIface = NULL;
+     CALL_INTF_EXT(pAP->wpaCtrlInterface, fSelectPrimLinkIface, &linkIface);
+     T_SSID* pLinkSSID = (swl_str_isEmpty(linkIface) ? pAP->pSSID : wld_ssid_getSsidByIfName(linkIface));
++    if(linkIface == NULL) {
++           free(linkIface);
++           return pAP->alias;
++    }
+     free(linkIface);
+     return wld_ssid_getIfName(pLinkSSID);
+ }
+-- 
+2.34.1
+
