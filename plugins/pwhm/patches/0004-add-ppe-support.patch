@@ -1,0 +1,10 @@
+--- a/src/nl80211/wld_hostapd_cfgFile.c
++++ b/src/nl80211/wld_hostapd_cfgFile.c
+@@ -823,6 +823,7 @@ static bool s_setVapCommonConfig(T_Acces
+         }
+         // TODO: manage 11be exclusion in specific BSSs
+     }
++    swl_mapCharFmt_addValInt32(vapConfigMap, "ppe_vp", 3);
+ 
+     swl_security_mfpMode_e mfp = swl_security_getTargetMfpMode(pAP->secModeEnabled, pAP->mfpConfig);
+     bool isH2E = pAP->pFA->mfn_misc_has_support(pAP->pRadio, pAP, "SAE_PWE", 0);
