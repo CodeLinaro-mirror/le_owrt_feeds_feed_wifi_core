@@ -3,13 +3,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pwhm
-PKG_VERSION:=sah-next_v7.14.10
+PKG_VERSION:=sah-next_v7.14.12
 SHORT_DESCRIPTION:=PrplMesh WHM
 
-PKG_SOURCE:=pwhm-sah-next_v7.14.10.tar.gz
-PKG_SOURCE_URL:=https://gitlab.com/prpl-foundation/prplmesh/pwhm/plugins/pwhm/-/archive/sah-next_v7.14.10
-PKG_HASH:=bc5661f56346a272be73b6006b9b4e0fa620a0c8ac1462ba13e682f48f052886
-PKG_BUILD_DIR:=$(BUILD_DIR)/pwhm-sah-next_v7.14.10
+PKG_SOURCE:=pwhm-sah-next_v7.14.12.tar.gz
+PKG_SOURCE_URL:=https://gitlab.com/prpl-foundation/prplmesh/pwhm/plugins/pwhm/-/archive/sah-next_v7.14.12
+PKG_HASH:=2fc7911c514ed6471728bfdd14e1c8e6074056ffa453b28e52486075d89f1944
+PKG_BUILD_DIR:=$(BUILD_DIR)/pwhm-sah-next_v7.14.12
 PKG_MAINTAINER:=Soft At Home <support.opensource@softathome.com>
 PKG_LICENSE:=BSD-2-Clause-Patent
 PKG_LICENSE_FILES:=LICENSE
@@ -17,7 +17,6 @@ PKG_LICENSE_FILES:=LICENSE
 COMPONENT:=pwhm
 
 PKG_RELEASE:=1
-PKG_BUILD_DEPENDS += openssl/host
 
 define SAHInit/Install
 	install -d ${PKG_INSTALL_DIR}/etc/rc.d/
