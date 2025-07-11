@@ -3,13 +3,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pwhm
-PKG_VERSION:=sah-next_v7.22.1
+PKG_VERSION:=sah-next_v7.22.2
 SHORT_DESCRIPTION:=PrplMesh WHM
 
-PKG_SOURCE:=pwhm-sah-next_v7.22.1.tar.gz
-PKG_SOURCE_URL:=https://gitlab.com/prpl-foundation/prplmesh/pwhm/plugins/pwhm/-/archive/sah-next_v7.22.1
-PKG_HASH:=45beaa5a2f73bd5b1f46a401296b3dd43e1c8fbdaf29f9818080b29123230fee
-PKG_BUILD_DIR:=$(BUILD_DIR)/pwhm-sah-next_v7.22.1
+PKG_SOURCE:=pwhm-sah-next_v7.22.2.tar.gz
+PKG_SOURCE_URL:=https://gitlab.com/prpl-foundation/prplmesh/pwhm/plugins/pwhm/-/archive/sah-next_v7.22.2
+PKG_HASH:=c1f2829e6c4c3763a94ccc8b6ad82481f454c71cfeb50e2a56f9e6f8ebdc623b
+PKG_BUILD_DIR:=$(BUILD_DIR)/pwhm-sah-next_v7.22.2
 PKG_MAINTAINER:=Soft At Home <support.opensource@softathome.com>
 PKG_LICENSE:=BSD-2-Clause-Patent
 PKG_LICENSE_FILES:=LICENSE
@@ -47,7 +47,8 @@ define Package/$(PKG_NAME)
   DEPENDS += +libamxj
   DEPENDS += +mod-netmodel
   DEPENDS += +odl-generator
-  DEPENDS += +PACKAGE_kmod-mac80211:kmod-mac80211
+  DEPENDS += +PACKAGE_kmod-cfg80211:kmod-mac80211
+  DEPENDS += +PACKAGE_kmod-cfg80211-qca:kmod-mac80211-qca
   MENU:=1
 endef
 
