@@ -1,15 +1,15 @@
-# WARNING: Automatically generated file using BAF (Build system Agnostic File) tooling (version development)
+# WARNING: Automatically generated file using BAF (Build system Agnostic File) tooling (version 2.39.3)
 # WARNING: You should contribute changes to https://gitlab.com/prpl-foundation/prplmesh/pwhm/plugins/pwhm/-/blob/main/baf.yml instead
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pwhm
-PKG_VERSION:=sah-next_v7.39.1
+PKG_VERSION:=sah-next_v7.39.2
 SHORT_DESCRIPTION:=PrplMesh WHM
 
-PKG_SOURCE:=pwhm-sah-next_v7.39.1.tar.gz
-PKG_SOURCE_URL:=https://gitlab.com/prpl-foundation/prplmesh/pwhm/plugins/pwhm/-/archive/sah-next_v7.39.1
-PKG_HASH:=f6273b00d3d9742f682bdfb7be6c89117aea4e6b17466e2e67987281ec1f21db
-PKG_BUILD_DIR:=$(BUILD_DIR)/pwhm-sah-next_v7.39.1
+PKG_SOURCE:=pwhm-sah-next_v7.39.2.tar.gz
+PKG_SOURCE_URL:=https://gitlab.com/prpl-foundation/prplmesh/pwhm/plugins/pwhm/-/archive/sah-next_v7.39.2
+PKG_HASH:=594dfc7e4b57592161733e1b2a927f054531aaeb10993b9d794e34c17db228c2
+PKG_BUILD_DIR:=$(BUILD_DIR)/pwhm-sah-next_v7.39.2
 PKG_MAINTAINER:=Soft At Home <support.opensource@softathome.com>
 PKG_LICENSE:=BSD-2-Clause-Patent
 PKG_LICENSE_FILES:=LICENSE
