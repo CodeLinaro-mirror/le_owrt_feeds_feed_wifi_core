@@ -3,14 +3,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pwhm
-RAW_VERSION:=sah-next_v7.43.4
+RAW_VERSION:=sah-next_v7.43.5
 PKG_VERSION:=$(if $(filter v0% v1% v2% v3% v4% v5% v6% v7% v8% v9%,$(RAW_VERSION)),$(patsubst v%,%,$(RAW_VERSION)),$(RAW_VERSION))
 SHORT_DESCRIPTION:=PrplMesh WHM
 
-PKG_SOURCE:=pwhm-sah-next_v7.43.4.tar.gz
-PKG_SOURCE_URL:=https://gitlab.com/prpl-foundation/prplmesh/pwhm/plugins/pwhm/-/archive/sah-next_v7.43.4
-PKG_HASH:=bd3eee9f527c09a31d2748cfb1603dea087163ddfb4805acbb61983196d21e38
-PKG_BUILD_DIR:=$(BUILD_DIR)/pwhm-sah-next_v7.43.4
+PKG_SOURCE:=pwhm-sah-next_v7.43.5.tar.gz
+PKG_SOURCE_URL:=https://gitlab.com/prpl-foundation/prplmesh/pwhm/plugins/pwhm/-/archive/sah-next_v7.43.5
+PKG_HASH:=5b9ff2496bc18d96e3df70b2c327ca31e65a34d98ee41fa759f0fc5c14b4e3a6
+PKG_BUILD_DIR:=$(BUILD_DIR)/pwhm-sah-next_v7.43.5
 PKG_MAINTAINER:=Soft At Home <support.opensource@softathome.com>
 PKG_LICENSE:=BSD-2-Clause-Patent
 PKG_LICENSE_FILES:=LICENSE
